@@ -1,0 +1,27 @@
+# Rime custom settings
+# encoding: utf-8
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 补丁文件：在不修改主 schema 的情况下叠加配置
+# RIME 会把这里的内容合并进 jyutping.schema.yaml
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+patch:
+
+  # 反查：用普通话拼音找粤语词
+  # 触发方式：按 ` 键切换到普通话模式
+  # 例：不知道「咩」怎么拼，按 ` 输入 shenme，
+  #     候选词旁边会显示「咩 me1」
+  reverse_lookup:
+    dictionary: luna_pinyin
+    prefix: "`"
+    suffix: "'"
+    tips: 〔普通話反查〕
+    preedit_format:
+      - xform/([nl])v/$1ü/
+      - xform/([nl])ue/$1üe/
+      - xform/([jqxy])v/$1u/
+    comment_format:
+      - xform/([a-z]+[1-6])/〔$1〕   # 候选词旁边显示粤拼读音
+
+  # 确保反查识别器正确挂载
+  recognizer/patterns/reverse_lookup: "`[a-z]*'?$"
