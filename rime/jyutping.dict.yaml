@@ -1,0 +1,20 @@
+# Rime dictionary
+# encoding: utf-8
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 词库入口文件
+# 本文件不存储词汇，只负责声明引用哪些词库
+# 实际词汇来自 rime-cantonese（jyut6ping3）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
+name: jyutping               # 必须和 schema_id 一致
+version: "2024.01.01"
+sort: by_weight              # 候选词按使用频率排序
+vocabulary: essay-cantonese  # 使用粤语词频表
+
+import_tables:
+  - jyut6ping3.chars         # 单字词库（最基础，必须有）
+  - jyut6ping3.words         # 常用词组
+  - jyut6ping3.phrase        # 短语
+  - jyut6ping3.lettered      # 含英文字母的词（如 WiFi、App）
+...
