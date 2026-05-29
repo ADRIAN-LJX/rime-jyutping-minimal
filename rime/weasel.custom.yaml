@@ -1,0 +1,60 @@
+# Rime settings - Weasel (Windows)
+# encoding: utf-8
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 小狼毫外观配置
+# 控制候选词框的颜色、字体、大小
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+patch:
+
+  # 全局字体设置
+  "style/font_face": "Microsoft YaHei"   # 微软雅黑，Windows 自带
+  "style/font_point": 14                 # 字体大小
+  "style/label_font_point": 12          # 候选词序号大小
+  "style/comment_font_point": 12        # 注释（拼音提示）大小
+
+  # 候选词框布局
+  "style/horizontal": true              # 候选词横排显示
+  "style/inline_preedit": true          # 拼音显示在输入框内（不另起一行）
+  "style/candidate_list_layout": linear # 线性排列
+
+  # 圆角和间距
+  "style/corner_radius": 6             # 候选框圆角
+  "style/border_height": 6            # 边框内边距（上下）
+  "style/border_width": 8             # 边框内边距（左右）
+  "style/spacing": 10                 # 候选词之间的间距
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # 黑白极简配色方案
+  # 所有颜色用 0xBBGGRR 格式（注意不是 RGB，是反的）
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  preset_color_schemes:
+    jyutping_mono:                      # 方案名，可自定义
+      name: "粵拼極簡／Jyutping Mono"
+      author: "你的名字"
+
+      # 背景和边框
+      back_color: 0xFFFFFF              # 候选框背景：纯白
+      border_color: 0xD0D0D0            # 边框：浅灰
+      shadow_color: 0x00000000          # 阴影：无
+
+      # 输入中的拼音
+      text_color: 0x000000              # 正在输入的拼音：黑色
+      hilited_text_color: 0x000000      # 高亮拼音：黑色
+      hilited_back_color: 0xFFFFFF      # 高亮拼音背景：白色
+
+      # 候选词
+      candidate_text_color: 0x000000    # 候选词文字：黑色
+      comment_text_color: 0x888888      # 拼音注释：灰色
+
+      # 选中的候选词
+      hilited_candidate_text_color: 0xFFFFFF    # 选中词文字：白色
+      hilited_candidate_back_color: 0x000000    # 选中词背景：黑色
+      hilited_comment_text_color: 0xAAAAAA      # 选中词注释：浅灰
+
+      # 序号
+      label_color: 0x888888             # 未选中序号：灰色
+      hilited_label_color: 0xFFFFFF     # 选中序号：白色
+
+  # 启用上面定义的配色方案
+  "style/color_scheme": jyutping_mono
