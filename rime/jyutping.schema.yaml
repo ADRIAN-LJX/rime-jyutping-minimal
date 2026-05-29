@@ -1,0 +1,132 @@
+# Rime schema
+# encoding: utf-8
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块1：身份证
+# 告诉 RIME 这个方案叫什么、是谁写的
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+schema:
+  schema_id: jyutping          # 方案的唯一ID，文件名要跟这个一致
+  name: 粵語拼音                # 显示在输入法切换菜单里的名字
+  version: "0.1.0"
+  author:
+    - LJX
+  description: |-
+    基於 rime-cantonese 詞庫的粵語拼音輸入方案
+    支援聲調可選輸入、普通話反查
+  dependencies:
+    - jyut6ping3                # 依赖 rime-cantonese 的词库
+    - luna_pinyin               # 依赖官方普通话方案（反查用）
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块2：开关
+# 用户可以在输入过程中切换的功能
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 粵, 英 ]          # 中文模式 / 英文模式
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - options:
+      - noop
+      - simplification
+    states: [ 傳統漢字, 簡化漢字 ]  # 繁简切换
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块3：引擎组件
+# 告诉 RIME 要加载哪些功能模块
+# 顺序有意义，RIME 按顺序执行
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+engine:
+  processors:
+    - ascii_composer            # 处理英文模式切换
+    - recognizer                # 识别特殊输入（如反查前缀 `）
+    - key_binder                # 处理快捷键
+    - speller                   # 处理拼音输入
+    - punctuator                # 处理标点
+    - selector                  # 处理候选词选择
+    - navigator                 # 处理翻页
+    - express_editor            # 处理删除、确认
+  segmentors:
+    - ascii_segmentor
+    - matcher                   # 匹配反查前缀
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator         # 主翻译器：拼音→汉字
+    - reverse_lookup_translator # 反查翻译器：普通话拼音→粤语词
+  filters:
+    - simplifier                # 繁简转换过滤器
+    - uniquifier                # 去重
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块4：拼写规则（最核心）
+# 定义用户怎么输入、声调怎么处理
+# 模糊音在这里配置
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba  # 允许输入的字符
+  delimiter: " '"               # 音节分隔符
+  algebra:
+    # 声调可选：允许不打声调
+    - xform/[1-6]//             # 把声调数字直接去掉，变成无调输入
+
+    # 模糊音：n/l 不分
+    - derive/^n/l/              # n 开头可以用 l 代替
+    - derive/^l/n/              # l 开头可以用 n 代替
+
+    # 模糊音：ng/零声母 不分
+    - derive/^ng([aeiou])/ng$1/
+    - derive/^([aeiou])/ng$1/   # 零声母可以加 ng
+
+    # 允许省略韵尾 ng，如 fong 可以打 fon
+    - derive/ng$/n/
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块5：翻译器
+# 负责把输入的拼音串转成候选汉字
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+translator:
+  dictionary: jyut6ping3        # 使用 rime-cantonese 的词库
+  spelling_hints: 9             # 候选词旁边显示几个字的拼音提示
+  preedit_format:               # 输入框里拼音的显示格式（保持原样）
+    - xform/([aeiou])(mg|ng)?([1-6])/$1$2$3/
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块6：普通话反查
+# 用户按 ` 键后，切换成普通话拼音输入
+# 输入普通话可以找到对应的粤语词
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+reverse_lookup:
+  dictionary: luna_pinyin       # 用官方普通话词库做反查
+  prefix: "`"                   # 按 ` 键触发
+  suffix: "'"                   # 按 ' 键结束反查
+  tips: 〔普通話〕               # 反查模式下的提示文字
+  preedit_format:               # 普通话拼音显示格式
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块7：标点符号
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+punctuator:
+  import_preset: default        # 使用 RIME 默认标点配置
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块8：快捷键
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+key_binder:
+  import_preset: default
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 区块9：识别器
+# 告诉 RIME 什么前缀触发什么模式
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "`[a-z]*'?$"  # ` 开头的输入触发普通话反查
